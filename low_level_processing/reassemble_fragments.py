@@ -1,20 +1,43 @@
-from scapy.all import IP, Raw, sniff
+from scapy.all import sniff, IP
 from collections import defaultdict
 
-received_fragments = defaultdict(dict)
+# Tüm fragment'ları bu dict'te tutacağız
+fragments_dict = defaultdict(list)
 
-def reassemble_packet(packet):
-    if IP in packet and Raw in packet:
-        ip_layer = packet[IP]
-        key = (ip_layer.src, ip_layer.dst, ip_layer.id)
-        received_fragments[key][ip_layer.frag] = bytes(packet[Raw].load)
+def is_my_packet(pkt):
+    if IP in pkt:
+        ip_layer = pkt[IP]
+        # SADECE belirli source IP'den gelenleri işle
+        return ip_layer.src == "127.0.0.1"
+    return False
 
-        if ip_layer.flags == 0:  # Son parça
-            try:
-                full_data = b''.join(received_fragments[key][i] for i in sorted(received_fragments[key]))
-                print(f"\n Yeniden birleştirilen veri:\n{full_data.decode(errors='ignore')}")
-            except Exception as e:
-                print(f"Hata: {e}")
+def packet_handler(pkt):
+    if not is_my_packet(pkt):
+        return  # Diğerlerini atla
 
-print("Paketler dinleniyor...")
-sniff(filter="ip", prn=reassemble_packet)
+    ip_layer = pkt[IP]
+    ip_id = ip_layer.id
+    src = ip_layer.src
+    dst = ip_layer.dst
+    key = (ip_id, src, dst)
+
+    fragments_dict[key].append(ip_layer)
+
+    # "More Fragments" flag yoksa ve offset == 0 ise tek parça paket
+    if ip_layer.flags == 0 and ip_layer.frag == 0:
+        print("\n Tek paket veri:", bytes(ip_layer.payload).decode(errors="ignore"))
+        return
+
+    # Eğer "More Fragments" = 0 ve offset > 0 => son fragment geldi
+    if ip_layer.flags == 0:
+        all_frags = fragments_dict[key]
+        # Offset'e göre sırala
+        all_frags.sort(key=lambda p: p.frag)
+
+        full_payload = b''.join(bytes(f.payload) for f in all_frags)
+        try:
+            print("\n Yeniden birleştirilen veri:\n", full_payload.decode(errors="ignore"))
+        except Exception as e:
+            print("Veri birleştirme hatası:", e)
+
+        del fragments_dict[key]  # Belleği temizle
