@@ -26,10 +26,11 @@ Bu proje, şifrelenmiş dosya aktarımı gerçekleştiren, IP başlığını dü
 ├── sender.py              # Dosya şifreleme ve gönderim (TCP/UDP)
 ├── receiver.py            # Dosya alma, şifre çözme ve doğrulama
 ├── crypto_utils.py        # AES şifreleme ve SHA-256 fonksiyonları
-├── send_custom_ip_packet.py
-├── fragment_and_send.py
-├── reassemble_fragments.py
-├── calculate_ip_checksum.py
+├── low_level_processing
+    ├── send_custom_ip_packet.py
+    ├── fragment_and_send.py
+    ├── reassemble_fragments.py
+    ├── calculate_ip_checksum.py
 ├── main.py                # IP düzeyinde tüm testleri sırayla çalıştıran script
 ├── network_test.py        # iPerf3 ve ping testlerini çalıştırır
 ├── network_utils.py       # Ağ durumu değerlendirme (ping packet loss)
@@ -61,3 +62,5 @@ Bu proje, şifrelenmiş dosya aktarımı gerçekleştiren, IP başlığını dü
 - **TCP/UDP Hibrit Gönderim**: Kullanıcıya veya ağ durumuna göre otomatik seçim
 - **GUI**: Kolay dosya seçimi, IP girişi ve protokol tercihi
 - **Gerçek zamanlı hata kontrolü**
+
+## Toutube Videosu
