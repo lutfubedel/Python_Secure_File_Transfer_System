@@ -63,4 +63,4 @@ Bu proje, şifrelenmiş dosya aktarımı gerçekleştiren, IP başlığını dü
 - **GUI**: Kolay dosya seçimi, IP girişi ve protokol tercihi
 - **Gerçek zamanlı hata kontrolü**
 
-## Toutube Videosu
+## Youtube Videosu
