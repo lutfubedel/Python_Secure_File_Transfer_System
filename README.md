@@ -64,3 +64,4 @@ Bu proje, şifrelenmiş dosya aktarımı gerçekleştiren, IP başlığını dü
 - **Gerçek zamanlı hata kontrolü**
 
 ## Youtube Videosu
+https://youtu.be/tzg9fCFOfzc
